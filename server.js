@@ -1,16 +1,27 @@
 import * as  db from './database/database.js'
 import express from 'Express'
 import bodyParser from 'body-parser'
+import cors from 'cors'
+import cookieParser from 'cookie-parser'
+import path from 'path'
+import { fileURLToPath } from 'url';
+import logger from 'morgan'
 
 const app = express()
 const port = process.env.PORT || 5000
 
-app.use(bodyParser.json())
-app.use(
-	bodyParser.urlencoded({
-		extended: true
-	})
-)
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+app.set("views", path.join(__dirname, "views"))
+app.set("view engine", "jade")
+
+app.use(cors())
+app.use(logger("dev"))
+app.use(express.json())
+app.use(express.urlencoded({extended: true}))
+app.use(cookieParser())
+app.use(express.static(path.join(__dirname, "public")))
 
 // Display Home
 app.get('/', (request, response) => {
